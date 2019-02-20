@@ -19,8 +19,7 @@
 			"aceAttribsToClasses": "ep_tables/static/js/datatables:aceAttribsToClasses",
 			"acePostWriteDomLineHTML": "ep_tables/static/js/datatables:acePostWriteDomLineHTML",
 			"aceInitialized": "ep_tables/static/js/datatables:aceInitialized",
-			"postAceInit": "ep_tables/static/js/datatables:postAceInit",
-			"aceEditEvent": "ep_tables/static/js/datatables:aceEditEvent"
+			"postAceInit": "ep_tables/static/js/datatables:postAceInit"
 		}
 	}]
 }

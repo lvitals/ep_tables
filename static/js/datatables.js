@@ -149,10 +149,7 @@ exports.aceAttribsToClasses = function (hook, context) {
     return ['tblProp:' + context.value];
   }
 }
-exports.aceEditEvent = function (hook, context) {
-/*  console.log("---------------------------");
-  console.log(context);*/
-}
+
 exports.aceStartLineAndCharForPoint = function (hook, context) {
 	var selStart = null;
   try {
@@ -302,23 +299,14 @@ if (typeof (Datatables) == 'undefined') var Datatables = function () {
       return rowEndOffset;
     }
     /**
-
 			current row index, 
-
 			td index ,
-
 			the length of leftover text of the current cell,
-
 			current row start offset,
-
 			current row end offset,
-
 			current td start offset,
-
 			current td end offset,
-
 			and cellCaretPos
-
 		*/
     dt.getFocusedTdInfo = function (payload, colStart) {
       var payloadOffset = colStart - this.vars.OVERHEAD_LEN_PRE;
@@ -425,7 +413,7 @@ if (typeof (Datatables) == 'undefined') var Datatables = function () {
         } else {
           rep.selEnd[1] = rep.selStart[1] = currLineText.length;
           this.context.editorInfo.ace_doReturnKey();
-          //				this.context.editorInfo.ace_inCallStackIfNecessary ('newline',this.context.editorInfo.ace_doReturnKey);	
+          // this.context.editorInfo.ace_inCallStackIfNecessary ('newline',this.context.editorInfo.ace_doReturnKey);	
         }
       }
       //if no col/row specified, create a default 3X3  empty table
