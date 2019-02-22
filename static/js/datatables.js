@@ -1034,8 +1034,9 @@ if (typeof (Datatables) == 'undefined') var Datatables = function () {
         "trClass": "alst",
         "tdClass": "hide-el"
       }
-      rep.selEnd[1] = rep.selStart[1] = currLineText.length;
+
       this.context.editorInfo.ace_inCallStackIfNecessary('newline', this.context.editorInfo.ace_doReturnKey);
+      rep.selEnd[1] = rep.selStart[1] = 0;
       context.editorInfo.ace_performDocumentReplaceRange(rep.selStart, rep.selEnd, JSON.stringify(tableObj));
     };
     dt.doReturnKey = function () {
