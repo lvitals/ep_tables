@@ -20,6 +20,23 @@ exports.postAceInit = function (hook, context) {
     $tblContextMenu.hide();
   }
 
+  // ignore drag drop
+  context.ace.callWithAce(function(ace){
+    var doc = ace.ace_getDocument();
+
+    var $inner = $(doc).find('.data-tables');
+
+    $inner.on("drop", function(e){
+      e.preventDefault();
+      return true;
+    });
+
+    $inner.on("dragend", "tbody", function(e){
+      e.preventDefault();
+      return true;
+    });
+  });
+
   initContextMenu = function() {    
     $tblContextMenu = $('#table-context-menu').appendTo('body');
 
