@@ -113,7 +113,9 @@ exports.acePostWriteDomLineHTML = function (hook_name, args, cb) {
     // Case when etherpad interact with the content of a cell and breaks the table line into several lines (like when writing an url inside a cell)
     // In that case, we have to regroup everything before rendering the line.
     if (children.length > 1 && lineText.indexOf("payload") != -1 && lineText_end.indexOf("data-tables") != -1) {
-    for (var i = 1; i < children.length; i++) {
+
+      
+    for (var i = 1; i < children.length; i++) {   
 
       if (args.node.children[0].innerText) {
       args.node.children[0].innerText += args.node.children[i].innerText;
@@ -192,21 +194,38 @@ exports.aceEndLineAndCharForPoint = function (hook, context) {
     console.log('error ' + error);
   }
 };
+
 exports.aceKeyEvent = function (hook, context) {
   var specialHandled = false;
 
   var currLineNumber = context.rep.selStart[0];
+
+  var currentLine = context.rep.lines.atIndex(currLineNumber);
+  var afterLine = context.rep.lines.atIndex(currLineNumber + 1);
+  var previousLine = context.rep.lines.atIndex(currLineNumber - 1);
+  
+  if (context.evt.key == "Delete" && currLineNumber > 0) {
+
+    if (typeof afterLine === "undefined") {
+      context.evt.preventDefault();
+      return true;
+    }
+
+    if (currentLine.text.length < 1 && afterLine.text.indexOf("data-tables") != -1) {
+      context.evt.preventDefault();
+      return true;
+    }
+  }
+
   // if trying to delete the line after table, we prevent this, refs Issue #22
   if (context.evt.key == "Backspace" && currLineNumber > 0) {
-    var currentLine = context.rep.lines.atIndex(currLineNumber);
-    var previousLine = context.rep.lines.atIndex(currLineNumber -1);
-    
     // if current line is empty and previous line is a Table, then we prevent the backspace action
     if (currentLine.text.length < 1 && previousLine.text.indexOf("data-tables") != -1) {
       context.evt.preventDefault();
       return true;
     }
-  }   
+  
+  }
 
   try {
     Datatables.context = context;
@@ -222,13 +241,30 @@ exports.aceKeyEvent = function (hook, context) {
         Datatables.performDocumentTableTabKey();
         specialHandled = true;
       }
-      if ((!specialHandled) && isTypeForSpecialKey && keyCode == 13) {
-        // return key, handle specially;
+
+      var keySpecial = [8, 9, 16, 17, 18, 20,
+                        27, 33, 34, 35, 36, 37,
+                        38, 39, 40, 45, 46, 112,
+                        113, 114, 115, 116, 117,
+                        118, 119, 120, 121, 122, 123];
+
+      var isKeySpecial = keySpecial.indexOf(keyCode);
+
+      if ((!specialHandled) && isTypeForSpecialKey) {
         context.editorInfo.ace_fastIncorp(5);
-        evt.preventDefault();
-        Datatables.doReturnKey();
+        
+        if (isKeySpecial === -1) {
+          Datatables.doReplaceKey(context.evt.key, keyCode);
+          evt.preventDefault();
+        }
+
+        if (context.evt.key == "Delete" && currLineNumber > 0) {
+          evt.preventDefault();
+        }
+
         specialHandled = true;
       }
+
       if ((!specialHandled) && isTypeForSpecialKey && ((type == "keydown" && keyCode == Datatables.vars.JS_KEY_CODE_DEL) || keyCode == Datatables.vars.JS_KEY_CODE_BS || (String.fromCharCode(which).toLowerCase() == "h" && (evt.ctrlKey)))) {
         context.editorInfo.ace_fastIncorp(20);
         evt.preventDefault();
@@ -1093,6 +1129,51 @@ if (typeof (Datatables) == 'undefined') var Datatables = function () {
         return true;
       }
     };
+
+    dt.doReplaceKey = function (key, keyCode) {
+
+      if(keyCode == 13) {
+        charText = " /r/n ";
+      } else {
+        charText = key;
+      }
+
+      var context = this.context;
+      var rep = context.rep;
+      var start = rep.seStart;
+      var end = rep.selEnd;
+
+      var currLine = rep.lines.atIndex(rep.selStart[0]);
+      var currLineText = currLine.text;
+      if (currLineText.indexOf('data-tables') == -1) return false;
+      else {
+        try {
+          var currCarretPos = rep.selStart[1];
+          if (currLineText.substring(currCarretPos - 1, currCarretPos + 2) == '","') return true;
+          else if (currLineText.substring(currCarretPos - 2, currCarretPos + 1) == '","') return true;
+          else if (currCarretPos < this.vars.OVERHEAD_LEN_PRE) return true;
+          else if (currCarretPos > currLineText.length) return true;
+          var start = rep.selStart,
+            end = rep.selEnd;
+          newText = charText;
+          start[1] = currCarretPos;
+          end[1] = currCarretPos;
+          try {
+            var jsonObj = JSON.parse(currLineText.substring(0, start[1]) + newText + currLineText.substring(start[1]));
+            payloadStr = JSON.stringify(jsonObj.payload);
+            if (currCarretPos > payloadStr.length + this.vars.OVERHEAD_LEN_PRE - 2) {
+              return true;
+            }
+          } catch (error) {
+            return true;
+          }
+          context.editorInfo.ace_performDocumentReplaceRange(start, end, newText);
+        } catch (error) {}
+
+        return true;
+      }
+    };
+
     dt.isCellDeleteOk = function (keyCode) {
       var context = this.context;
       var rep = context.rep;
@@ -1117,7 +1198,7 @@ if (typeof (Datatables) == 'undefined') var Datatables = function () {
           }
           break;
         case this.vars.JS_KEY_CODE_DEL:
-          return false; //disabled for the moment				
+          return false; //disabled for the moment
           if (cellEntryLen != 0 && currTdInfo.leftOverTdTxtLen - this.vars.OVERHEAD_LEN_MID > 0) {
             isDeleteAccepted = true;
           }
@@ -1246,9 +1327,9 @@ if (typeof (Datatables) == 'undefined') var Datatables = function () {
                   editorInfo.ace_performDocumentReplaceCharRange(deleteBackTo, docChar, '');
                 } else {
                   var returnKeyWitinTblOffset = 0;
-                  if (lineText.substring(col - 5, col) == '/r/n ') {
-                    returnKeyWitinTblOffset = 4;
-                  }
+                  // if (lineText.substring(col - 5, col) == '/r/n ') {
+                  //   returnKeyWitinTblOffset = 4;
+                  // }
                   // normal or table return key delete
                   editorInfo.ace_performDocumentReplaceCharRange(docChar - 1 - returnKeyWitinTblOffset, docChar, '');
                 }
