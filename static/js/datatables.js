@@ -85,7 +85,14 @@ exports.postAceInit = function (hook, context) {
     });    
   }
 
-  $('#table-menu-button').click(openContextMenu);  
+  $('#table-menu-button').click(openContextMenu);
+
+  // if read only hide button
+  if ($("body.readonly")[0]) {
+      $('.table-menu').hide();    
+  } else {
+      $('.table-menu').show();
+  }
   
 };
 // Once ace is initialized, we set ace_doDatatableOptions and bind it to the context
