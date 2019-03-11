@@ -13,6 +13,8 @@
 		"client_hooks" : {
 			"collectContentLineBreak": "ep_tables/static/js/contentcollector:collectContentLineBreak",
 			"collectContentLineText": "ep_tables/static/js/contentcollector:collectContentLineText",
+			"collectContentPre": "ep_tables/static/js/contentcollector:collectContentPre",
+			"collectContentPost": "ep_tables/static/js/contentcollector:collectContentPost",
 			"aceKeyEvent": "ep_tables/static/js/datatables:aceKeyEvent",
 			"aceStartLineAndCharForPoint": "ep_tables/static/js/datatables:aceStartLineAndCharForPoint",
 			"aceEndLineAndCharForPoint": "ep_tables/static/js/datatables:aceEndLineAndCharForPoint",
