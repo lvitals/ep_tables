@@ -9,47 +9,93 @@ exports.collectContentLineBreak = function (hook, context) {
     return breakLine;
 };
 exports.collectContentLineText= function (hook, context) {
+
     var n = context.node;
-    var txt = context.text;
-    if (txt) {
-        txt = "";        
-        while (n) {
-            if (n.tagName == 'TD') {
+    var txt;
 
-                var existing = localStorage.getItem('payload');
-                existing = existing ? existing.split('||') : [];
-                existing.push(n.innerText);
-                localStorage.setItem('payload', existing.toString());
+    if (n != 'undefined' && n.nextElementSibling) {
 
-                if (!n.nextElementSibling) {
-                    var payload = localStorage.getItem('payload');
-                    payload = payload ? payload.split(',') : [];
-    
-                    var tblRows = payload;
+        var el = n.nextElementSibling;
 
-                    localStorage.removeItem('payload');
-                    localStorage.clear();
-
-                    var payload = [[]];
-
-                    payload = [tblRows];
-                
-                    tableObj = {
-                        "payload": payload,
-                        "tblId": 1,
-                        "tblClass": "data-tables",
-                        "trClass": "alst",
-                        "tdClass": "hide-el"
-                    }
-                
-                    txt = JSON.stringify(tableObj);
-
-                }
-                
-            }
-            n = n.parentNode;
+        if ($(el).is('td')) {
+            var existing = localStorage.getItem('payload');
+            existing = existing ? existing.split('||') : [];
+            existing.push(el.innerText);
+            localStorage.setItem('payload', existing.toString());
         }
+
+    } else {
+        var el = n.parentNode;
+
+        if ($(el).is('tr')) {
+            var payload = localStorage.getItem('payload');
+            payload = payload ? payload.split(',') : [];
+
+            var tblRows = payload;
+
+            localStorage.removeItem('payload');
+            localStorage.clear();
+
+            var payload = [[]];
+
+            payload = [tblRows];
         
+            tableObj = {
+                "payload": payload,
+                "tblId": 1,
+                "tblClass": "data-tables",
+                "trClass": "alst",
+                "tdClass": "hide-el"
+            }
+        
+            txt = JSON.stringify(tableObj);
+            console.log(txt);
+        }
     }
+
     return txt;
+
+    // var n = context.node;
+    // var txt = context.text;
+    // if (txt) {
+    //     txt = "";        
+    //     while (n) {
+    //         if (n.tagName == 'TD') {
+
+    //             var existing = localStorage.getItem('payload');
+    //             existing = existing ? existing.split('||') : [];
+    //             existing.push(n.innerText);
+    //             localStorage.setItem('payload', existing.toString());
+
+    //             if (!n.nextElementSibling) {
+    //                 var payload = localStorage.getItem('payload');
+    //                 payload = payload ? payload.split(',') : [];
+    
+    //                 var tblRows = payload;
+
+    //                 localStorage.removeItem('payload');
+    //                 localStorage.clear();
+
+    //                 var payload = [[]];
+
+    //                 payload = [tblRows];
+                
+    //                 tableObj = {
+    //                     "payload": payload,
+    //                     "tblId": 1,
+    //                     "tblClass": "data-tables",
+    //                     "trClass": "alst",
+    //                     "tdClass": "hide-el"
+    //                 }
+                
+    //                 txt = JSON.stringify(tableObj);
+
+    //             }
+                
+    //         }
+    //         n = n.parentNode;
+    //     }
+        
+    // }
+    // return txt;
 };
