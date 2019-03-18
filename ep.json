@@ -7,14 +7,12 @@
 			"eejsBlock_scripts": "ep_tables/static/js/datatables:eejsBlock_scripts",
 			"eejsBlock_editbarMenuLeft": "ep_tables/static/js/datatables:eejsBlock_editbarMenuLeft",
 			"eejsBlock_timesliderScripts": "ep_tables/static/js/datatables:eejsBlock_timesliderScripts",
-    		"getLineHTMLForExport" : "ep_tables/export2html:getLineHTMLForExport"
+			"getLineHTMLForExport" : "ep_tables/export2html:getLineHTMLForExport"
 
 		},
 		"client_hooks" : {
 			"collectContentLineBreak": "ep_tables/static/js/contentcollector:collectContentLineBreak",
 			"collectContentLineText": "ep_tables/static/js/contentcollector:collectContentLineText",
-			"collectContentPre": "ep_tables/static/js/contentcollector:collectContentPre",
-			"collectContentPost": "ep_tables/static/js/contentcollector:collectContentPost",
 			"aceKeyEvent": "ep_tables/static/js/datatables:aceKeyEvent",
 			"aceStartLineAndCharForPoint": "ep_tables/static/js/datatables:aceStartLineAndCharForPoint",
 			"aceEndLineAndCharForPoint": "ep_tables/static/js/datatables:aceEndLineAndCharForPoint",
