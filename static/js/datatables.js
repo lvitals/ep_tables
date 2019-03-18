@@ -810,7 +810,8 @@ if (typeof (Datatables) == 'undefined') var Datatables = function () {
         "tblId": 1,
         "tblClass": "data-tables",
         "trClass": "alst",
-        "tdClass": "hide-el"
+        "tdClass": "hide-el",
+        "isFirstRow": true
       }
       rep.selEnd[1] = rep.selStart[1] = currLineText.length;
       this.context.editorInfo.ace_doReturnKey();
@@ -1092,7 +1093,8 @@ if (typeof (Datatables) == 'undefined') var Datatables = function () {
         "tblId": 1,
         "tblClass": "data-tables",
         "trClass": "alst",
-        "tdClass": "hide-el"
+        "tdClass": "hide-el",
+        "isFirstRow": true
       }
       rep.selEnd[1] = rep.selStart[1] = currLineText.length;
       this.context.editorInfo.ace_inCallStackIfNecessary('newline', this.context.editorInfo.ace_doReturnKey);

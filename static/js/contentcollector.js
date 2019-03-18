@@ -11,7 +11,7 @@ exports.collectContentLineBreak = function (hook, context) {
 exports.collectContentLineText= function (hook, context) {
 
     var n = context.node;
-    var txt;
+    var txt = context.text;
 
     if (n != 'undefined' && n.nextElementSibling) {
 
@@ -26,6 +26,7 @@ exports.collectContentLineText= function (hook, context) {
 
     } else {
         var el = n.parentNode;
+        txt = "";
 
         if ($(el).is('tr')) {
             var payload = localStorage.getItem('payload');
@@ -45,57 +46,55 @@ exports.collectContentLineText= function (hook, context) {
                 "tblId": 1,
                 "tblClass": "data-tables",
                 "trClass": "alst",
-                "tdClass": "hide-el"
+                "tdClass": "hide-el",
+                "isFirstRow": true
             }
         
             txt = JSON.stringify(tableObj);
-            console.log(txt);
         }
     }
 
-    return txt;
+    if (txt) {
+        txt = "";        
+        while (n) {
+            if (n.tagName == 'TD') {
 
-    // var n = context.node;
-    // var txt = context.text;
-    // if (txt) {
-    //     txt = "";        
-    //     while (n) {
-    //         if (n.tagName == 'TD') {
+                var existing = localStorage.getItem('payload');
+                existing = existing ? existing.split('||') : [];
+                existing.push(n.innerText);
+                localStorage.setItem('payload', existing.toString());
 
-    //             var existing = localStorage.getItem('payload');
-    //             existing = existing ? existing.split('||') : [];
-    //             existing.push(n.innerText);
-    //             localStorage.setItem('payload', existing.toString());
-
-    //             if (!n.nextElementSibling) {
-    //                 var payload = localStorage.getItem('payload');
-    //                 payload = payload ? payload.split(',') : [];
+                if (!n.nextElementSibling) {
+                    var payload = localStorage.getItem('payload');
+                    payload = payload ? payload.split(',') : [];
     
-    //                 var tblRows = payload;
+                    var tblRows = payload;
 
-    //                 localStorage.removeItem('payload');
-    //                 localStorage.clear();
+                    localStorage.removeItem('payload');
+                    localStorage.clear();
 
-    //                 var payload = [[]];
+                    var payload = [[]];
 
-    //                 payload = [tblRows];
+                    payload = [tblRows];
                 
-    //                 tableObj = {
-    //                     "payload": payload,
-    //                     "tblId": 1,
-    //                     "tblClass": "data-tables",
-    //                     "trClass": "alst",
-    //                     "tdClass": "hide-el"
-    //                 }
+                    tableObj = {
+                        "payload": payload,
+                        "tblId": 1,
+                        "tblClass": "data-tables",
+                        "trClass": "alst",
+                        "tdClass": "hide-el",
+                        "isFirstRow": true
+                    }
                 
-    //                 txt = JSON.stringify(tableObj);
+                    txt = JSON.stringify(tableObj);
 
-    //             }
+                }
                 
-    //         }
-    //         n = n.parentNode;
-    //     }
+            }
+            n = n.parentNode;
+        }
         
-    // }
-    // return txt;
+    }
+
+    return txt;
 };

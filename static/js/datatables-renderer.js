@@ -52,7 +52,12 @@ if (typeof (DatatablesRenderer) == 'undefined') var DatatablesRenderer = functio
                     tblProperties = this.createDefaultTblProperties();
                 }
                 
-                var isFirstRow = typeof (tblProperties) == 'undefined' || tblProperties == null || typeof (tblProperties.isFirstRow) == 'undefined'? false : tblProperties.isFirstRow;
+                // var isFirstRow = typeof (tblProperties) == 'undefined' ||
+                //     typeof (tblProperties.isFirstRow) == 'undefined' ? false : tblProperties.isFirstRow ||
+                //     tblProperties == null;
+
+                var isFirstRow = true;
+
                 var rowAttrs = tblProperties.rowAttrs;
                 var singleRowAttrs = rowAttrs.singleRowAttrs;
                 var cellAttrs = tblProperties.cellAttrs;
