@@ -26,8 +26,7 @@ exports.collectContentLineText= function (hook, context) {
 
     } else {
         var el = n.parentNode;
-        txt = "";
-
+        
         if ($(el).is('tr')) {
             var payload = localStorage.getItem('payload');
             payload = payload ? payload.split(',') : [];
@@ -55,9 +54,11 @@ exports.collectContentLineText= function (hook, context) {
     }
 
     if (txt) {
-        txt = "";        
+        
         while (n) {
             if (n.tagName == 'TD') {
+
+                txt = "";
 
                 var existing = localStorage.getItem('payload');
                 existing = existing ? existing.split('||') : [];
@@ -65,6 +66,7 @@ exports.collectContentLineText= function (hook, context) {
                 localStorage.setItem('payload', existing.toString());
 
                 if (!n.nextElementSibling) {
+
                     var payload = localStorage.getItem('payload');
                     payload = payload ? payload.split(',') : [];
     
