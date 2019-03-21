@@ -1,9 +1,11 @@
+
 if (typeof (DatatablesRenderer) == 'undefined') var DatatablesRenderer = function () {
+        const CRLF = "/r/n";
         var dRenderer = {
             render: function (context, element, attributes) {
 		        // Strange behaviour from IE. 
                 // It comes here 2 times per row, so I have to stop rendering a second time to avoid desctruction of the rendering
-		        if (context != "timeslider" && element.innerHTML && element.innerHTML.indexOf("payload") != 2) return;
+                if (context != "timeslider" && element.innerHTML && element.innerHTML.indexOf("payload") != 2) return;
                 
                 var renderer = new DatatablesRenderer.Renderer();
                 if (context == "timeslider") {
@@ -47,17 +49,15 @@ if (typeof (DatatablesRenderer) == 'undefined') var DatatablesRenderer = functio
                 var tdClass = tblJSONObj.tdClass;
                 var trClass = tblJSONObj.trClass;
                 var payload = tblJSONObj.payload;
+                // var isFirstRow = tblJSONObj.isFirstRow;
+
 
                 if (!tblProperties || tblProperties.length == 0) {
                     tblProperties = this.createDefaultTblProperties();
                 }
+
+                var isFirstRow = typeof (tblProperties) == 'undefined' || tblProperties == null || typeof (tblProperties.isFirstRow) == 'undefined'? false : tblProperties.isFirstRow;
                 
-                // var isFirstRow = typeof (tblProperties) == 'undefined' ||
-                //     typeof (tblProperties.isFirstRow) == 'undefined' ? false : tblProperties.isFirstRow ||
-                //     tblProperties == null;
-
-                var isFirstRow = true;
-
                 var rowAttrs = tblProperties.rowAttrs;
                 var singleRowAttrs = rowAttrs.singleRowAttrs;
                 var cellAttrs = tblProperties.cellAttrs;
@@ -114,12 +114,13 @@ if (typeof (DatatablesRenderer) == 'undefined') var DatatablesRenderer = functio
                             quoteAndComma = "";
                         }
                         tds[i] = this.setLinks(tds[i]);
-                        if (tds[i].indexOf('/r/n') != -1) {
+
+                        if (tds[i].indexOf(CRLF) != -1) {
                             cellsWithBr = "";
-                            var tdText = tds[i].split('/r/n');
+                            var tdText = tds[i].split(CRLF);
                             for (var k = 0; k < tdText.length; k++) {
                                 if (k < tdText.length - 1) {
-                                    cellsWithBr += tdText[k] + "<label value='tblBreak' class='hide-el' style='display:none;'>/r/n</label><label class='tblBreak' style='display:block;'></label>";
+                                    cellsWithBr += tdText[k] + "<label value='tblBreak' class='hide-el' style='display:none;'>"+CRLF+"</label><label class='tblBreak' style='display:block;'></label>";
                                 } else cellsWithBr += tdText[k];
                             }
                             htmlTbl += "<td  name='tData' " + colVAlign + " style='" + printViewTblTDStyles + cellStyles + " border-left:" + 

@@ -1,4 +1,4 @@
-var _ = require('ep_etherpad-lite/static/js/underscore');
+var padeditor = require("ep_etherpad-lite/static/js/pad_editor").padeditor
 
 exports.collectContentLineBreak = function (hook, context) {
     var tvalue = context.tvalue;
@@ -11,33 +11,34 @@ exports.collectContentLineBreak = function (hook, context) {
 exports.collectContentLineText= function (hook, context) {
 
     var n = context.node;
-    var txt = context.text;
 
     if (n != 'undefined' && n.nextElementSibling) {
 
         var el = n.nextElementSibling;
-
+        
         if ($(el).is('td')) {
             var existing = localStorage.getItem('payload');
             existing = existing ? existing.split('||') : [];
             existing.push(el.innerText);
             localStorage.setItem('payload', existing.toString());
+        } else {
+            return 0;
         }
 
     } else {
+
         var el = n.parentNode;
         
         if ($(el).is('tr')) {
+
             var payload = localStorage.getItem('payload');
             payload = payload ? payload.split(',') : [];
-
-            var tblRows = payload;
 
             localStorage.removeItem('payload');
             localStorage.clear();
 
+            var tblRows = payload;
             var payload = [[]];
-
             payload = [tblRows];
         
             tableObj = {
@@ -48,55 +49,23 @@ exports.collectContentLineText= function (hook, context) {
                 "tdClass": "hide-el",
                 "isFirstRow": true
             }
+
+            context.cc.startNewLine();
         
-            txt = JSON.stringify(tableObj);
+            return JSON.stringify(tableObj);
+
         }
+
     }
 
-    if (txt) {
-        
-        while (n) {
-            if (n.tagName == 'TD') {
+    var existing = localStorage.getItem('payload');
+    if (existing) return 0;
+};
 
-                txt = "";
+exports.collectContentPost = function(hook, context){
 
-                var existing = localStorage.getItem('payload');
-                existing = existing ? existing.split('||') : [];
-                existing.push(n.innerText);
-                localStorage.setItem('payload', existing.toString());
+};
 
-                if (!n.nextElementSibling) {
-
-                    var payload = localStorage.getItem('payload');
-                    payload = payload ? payload.split(',') : [];
+exports.collectContentPre = function(hook, context){
     
-                    var tblRows = payload;
-
-                    localStorage.removeItem('payload');
-                    localStorage.clear();
-
-                    var payload = [[]];
-
-                    payload = [tblRows];
-                
-                    tableObj = {
-                        "payload": payload,
-                        "tblId": 1,
-                        "tblClass": "data-tables",
-                        "trClass": "alst",
-                        "tdClass": "hide-el",
-                        "isFirstRow": true
-                    }
-                
-                    txt = JSON.stringify(tableObj);
-
-                }
-                
-            }
-            n = n.parentNode;
-        }
-        
-    }
-
-    return txt;
 };

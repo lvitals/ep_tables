@@ -1,4 +1,6 @@
+
 var _ = require('ep_etherpad-lite/static/js/underscore');
+const CRLF = "/r/n";
 // CommonJS
 if (typeof (require) != 'undefined') {
   if (typeof (Changeset) == 'undefined') {
@@ -810,8 +812,7 @@ if (typeof (Datatables) == 'undefined') var Datatables = function () {
         "tblId": 1,
         "tblClass": "data-tables",
         "trClass": "alst",
-        "tdClass": "hide-el",
-        "isFirstRow": true
+        "tdClass": "hide-el"
       }
       rep.selEnd[1] = rep.selStart[1] = currLineText.length;
       this.context.editorInfo.ace_doReturnKey();
@@ -1093,8 +1094,7 @@ if (typeof (Datatables) == 'undefined') var Datatables = function () {
         "tblId": 1,
         "tblClass": "data-tables",
         "trClass": "alst",
-        "tdClass": "hide-el",
-        "isFirstRow": true
+        "tdClass": "hide-el"
       }
       rep.selEnd[1] = rep.selStart[1] = currLineText.length;
       this.context.editorInfo.ace_inCallStackIfNecessary('newline', this.context.editorInfo.ace_doReturnKey);
@@ -1121,7 +1121,7 @@ if (typeof (Datatables) == 'undefined') var Datatables = function () {
           else if (currCarretPos > currLineText.length) return true;
           var start = rep.selStart,
             end = rep.selEnd;
-          newText = " /r/n ";
+          newText = CRLF;
           start[1] = currCarretPos;
           end[1] = currCarretPos;
           try {
@@ -1142,7 +1142,7 @@ if (typeof (Datatables) == 'undefined') var Datatables = function () {
     dt.doReplaceKey = function (key, keyCode) {
 
       if(keyCode == 13) {
-        charText = " /r/n ";
+        charText = CRLF;
       } else {
         charText = key;
       }
@@ -1336,7 +1336,7 @@ if (typeof (Datatables) == 'undefined') var Datatables = function () {
                   editorInfo.ace_performDocumentReplaceCharRange(deleteBackTo, docChar, '');
                 } else {
                   var returnKeyWitinTblOffset = 0;
-                  // if (lineText.substring(col - 5, col) == '/r/n ') {
+                  // if (lineText.substring(col - 5, col) == CRLF) {
                   //   returnKeyWitinTblOffset = 4;
                   // }
                   // normal or table return key delete
