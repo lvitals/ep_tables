@@ -49,14 +49,16 @@ if (typeof (DatatablesRenderer) == 'undefined') var DatatablesRenderer = functio
                 var tdClass = tblJSONObj.tdClass;
                 var trClass = tblJSONObj.trClass;
                 var payload = tblJSONObj.payload;
-                // var isFirstRow = tblJSONObj.isFirstRow;
+                var isFirstRow = tblJSONObj.isFirstRow;
 
 
                 if (!tblProperties || tblProperties.length == 0) {
                     tblProperties = this.createDefaultTblProperties();
                 }
 
-                var isFirstRow = typeof (tblProperties) == 'undefined' || tblProperties == null || typeof (tblProperties.isFirstRow) == 'undefined'? false : tblProperties.isFirstRow;
+                if (!isFirstRow) {
+                    var isFirstRow = typeof (tblProperties) == 'undefined' || tblProperties == null || typeof (tblProperties.isFirstRow) == 'undefined'? false : tblProperties.isFirstRow;
+                }
                 
                 var rowAttrs = tblProperties.rowAttrs;
                 var singleRowAttrs = rowAttrs.singleRowAttrs;
